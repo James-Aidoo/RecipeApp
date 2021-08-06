@@ -1,4 +1,4 @@
-package com.questdev.domain.recipeapp.model
+package com.questdev.domain.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -15,5 +15,5 @@ data class Recipe(
     val cookingInstructions: String = "",
     val ingredients: List<String> = listOf(),
     val dateAdded: String = "",
-    val dateUpdate: String = ""
+    val dateUpdated: String = ""
 ) : Parcelable
