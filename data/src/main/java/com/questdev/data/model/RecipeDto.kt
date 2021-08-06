@@ -2,7 +2,7 @@ package com.questdev.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class RecipeModel(
+data class RecipeDto(
     @SerializedName("pk")
     val primaryKey: Int?,
 

@@ -1,9 +1,9 @@
 package com.questdev.data.util.converter
 
-import com.questdev.data.model.RecipeModel
+import com.questdev.data.model.RecipeDto
 import com.questdev.domain.model.Recipe
 
-fun RecipeModel.toRecipe() = Recipe(
+fun RecipeDto.toRecipe() = Recipe(
     id = this.primaryKey ?: 0,
     title = this.title.orEmpty(),
     publisher = this.title.orEmpty(),
@@ -17,7 +17,7 @@ fun RecipeModel.toRecipe() = Recipe(
     dateUpdated = this.dateUpdated.orEmpty()
 )
 
-fun Recipe.toApiModel() = RecipeModel(
+fun Recipe.toApiModel() = RecipeDto(
     primaryKey = this.id,
     title = this.title,
     publisher = this.title,
@@ -31,6 +31,6 @@ fun Recipe.toApiModel() = RecipeModel(
     dateUpdated = this.dateUpdated
 )
 
-fun List<Recipe>.toApiModelList() = this.map { it.toApiModel() }
+fun List<Recipe>.toRecipeDtoList() = this.map { it.toApiModel() }
 
-fun List<RecipeModel>.toRecipeList() = this.map { it.toRecipe() }
+fun List<RecipeDto>.toRecipeList() = this.map { it.toRecipe() }
