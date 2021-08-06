@@ -8,14 +8,14 @@ import retrofit2.http.Query
 
 interface RemoteDataService {
 
-    @GET("search")
+    @GET("recipe/search")
     suspend fun searchRecipe(
         @Header("Authorization") token: String,
         @Query("page") page: Int,
         @Query("query") query: String
     ): RecipeSearchResponse?
 
-    @GET("get")
+    @GET("recipe/get")
     suspend fun getRecipe(
         @Header("Authorization") token: String,
         @Query("id") id: Int

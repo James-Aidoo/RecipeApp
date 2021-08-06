@@ -5,8 +5,9 @@ import com.questdev.data.util.converter.toRecipe
 import com.questdev.data.util.converter.toRecipeList
 import com.questdev.domain.model.Recipe
 import com.questdev.domain.repository.RecipeRepository
+import javax.inject.Inject
 
-class RecipeRepositoryImpl(
+class RecipeRepositoryImpl @Inject constructor(
     private val remoteDataService: RemoteDataService,
     private val token: String
 ) : RecipeRepository {
