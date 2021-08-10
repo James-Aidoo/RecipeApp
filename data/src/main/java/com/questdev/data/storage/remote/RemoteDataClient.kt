@@ -1,5 +1,7 @@
 package com.questdev.data.storage.remote
 
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -12,6 +14,15 @@ object RemoteDataClient {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+
+    private val loggingInterceptor: HttpLoggingInterceptor get() =
+        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+
+    private val client: OkHttpClient get() =
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
             .build()
 
 }
