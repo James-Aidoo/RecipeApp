@@ -17,6 +17,10 @@ class RecipeListViewModel @Inject constructor(
     val recipes = mutableStateOf<List<Recipe>>(listOf())
 
     init {
+        search()
+    }
+
+    private fun search() {
         viewModelScope.launch {
             val results = repository.searchRecipe(1, "chicken")
             recipes.value = results.orEmpty()
