@@ -11,8 +11,6 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 30
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -48,11 +46,11 @@ dependencies {
 
     def okhttp3_version = '4.9.1'
     implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
 
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
 
     // Hilt unit tests
     testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
