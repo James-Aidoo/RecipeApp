@@ -60,7 +60,7 @@ class RecipeListFragment : Fragment() {
                     Surface(
                         elevation = 8.dp,
                         modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colors.primary
+                        color = MaterialTheme.colors.surface
                     ) {
                         Column {
                             Row(
@@ -69,11 +69,7 @@ class RecipeListFragment : Fragment() {
                                 TextField(
                                     modifier = Modifier
                                         .fillMaxWidth(0.9f)
-                                        .padding(8.dp)
-                                        .background(
-                                            MaterialTheme.colors.surface,
-                                            MaterialTheme.shapes.medium
-                                        ),
+                                        .padding(8.dp),
                                     value = text,
                                     onValueChange = { text = it },
                                     label = {
@@ -102,13 +98,14 @@ class RecipeListFragment : Fragment() {
                                     )
                                 )
                             }
-                            LazyRow {
+                            LazyRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
                                 items(foodCategories) {
                                     FoodCategoryChip(category = it.value) {
-                                        Log.d(
-                                            TAG,
-                                            "Category '${it.value}' clicked"
-                                        )
+                                        text = it.value
+                                        viewModel.search(it.value)
                                     }
                                 }
                             }

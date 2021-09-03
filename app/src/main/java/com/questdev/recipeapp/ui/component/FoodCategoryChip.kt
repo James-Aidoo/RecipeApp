@@ -13,15 +13,16 @@ import androidx.compose.ui.unit.dp
 fun FoodCategoryChip(category: String, onClick: () -> Unit) {
     Card(
         shape = MaterialTheme.shapes.medium,
-        backgroundColor = MaterialTheme.colors.secondary,
+        backgroundColor = MaterialTheme.colors.primary,
+        elevation = 8.dp,
         modifier = Modifier
             .padding(8.dp)
             .clickable(onClick = onClick)
     ) {
         Text(
             text = category,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-            style = MaterialTheme.typography.body1
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+            style = MaterialTheme.typography.body2
         )
     }
 }
