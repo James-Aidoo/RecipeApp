@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -28,7 +30,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.questdev.domain.util.foodCategories
 import com.questdev.recipeapp.R
+import com.questdev.recipeapp.ui.component.FoodCategoryChip
 import com.questdev.recipeapp.ui.component.RecipeCard
 import com.questdev.recipeapp.viewmodel.RecipeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,44 +62,56 @@ class RecipeListFragment : Fragment() {
                         modifier = Modifier.fillMaxWidth(),
                         color = MaterialTheme.colors.primary
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            TextField(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.9f)
-                                    .padding(8.dp)
-                                    .background(
-                                        MaterialTheme.colors.surface,
-                                        MaterialTheme.shapes.medium
+                        Column {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                TextField(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.9f)
+                                        .padding(8.dp)
+                                        .background(
+                                            MaterialTheme.colors.surface,
+                                            MaterialTheme.shapes.medium
+                                        ),
+                                    value = text,
+                                    onValueChange = { text = it },
+                                    label = {
+                                        Text(
+                                            text = stringResource(R.string.search),
+                                        )
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            Icons.Filled.Search,
+                                            stringResource(R.string.search_icon)
+                                        )
+                                    },
+                                    textStyle = TextStyle(
+                                        color = MaterialTheme.colors.onSurface,
                                     ),
-                                value = text,
-                                onValueChange = { text = it },
-                                label = {
-                                    Text(
-                                        text = stringResource(R.string.search),
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Text,
+                                        imeAction = ImeAction.Search
+                                    ),
+                                    keyboardActions = KeyboardActions(
+                                        onSearch = {
+                                            viewModel.search(text)
+                                            focusManager.clearFocus(true)
+                                        }
                                     )
-                                },
-                                leadingIcon = {
-                                    Icon(
-                                        Icons.Filled.Search,
-                                        stringResource(R.string.search_icon)
-                                    )
-                                },
-                                textStyle = TextStyle(
-                                    color = MaterialTheme.colors.onSurface,
-                                ),
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Text,
-                                    imeAction = ImeAction.Search
-                                ),
-                                keyboardActions = KeyboardActions(
-                                    onSearch = {
-                                        viewModel.search(text)
-                                        focusManager.clearFocus(true)
-                                    }
                                 )
-                            )
+                            }
+                            LazyRow {
+                                items(foodCategories) {
+                                    FoodCategoryChip(category = it.value) {
+                                        Log.d(
+                                            TAG,
+                                            "Category '${it.value}' clicked"
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                     LazyColumn(
