@@ -8,17 +8,15 @@ import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalFocusManager
@@ -35,6 +33,7 @@ import com.questdev.recipeapp.ui.component.FoodCategoryChip
 import com.questdev.recipeapp.ui.component.RecipeCard
 import com.questdev.recipeapp.viewmodel.RecipeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RecipeListFragment : Fragment() {
@@ -52,6 +51,10 @@ class RecipeListFragment : Fragment() {
                 val recipes = viewModel.recipes.value
                 var text by rememberSaveable { mutableStateOf("") }
                 var selectedCategory by rememberSaveable { mutableStateOf("") }
+                var scrollPosition by rememberSaveable { mutableStateOf(0) }
+
+                val scrollState = rememberLazyListState()
+                val scope = rememberCoroutineScope()
 
                 Column {
 
@@ -100,14 +103,17 @@ class RecipeListFragment : Fragment() {
                             }
                             LazyRow(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                state = scrollState
                             ) {
-                                items(foodCategories) { category ->
+                                scope.launch { scrollState.animateScrollToItem(scrollPosition) }
+                                itemsIndexed(foodCategories) { index, category ->
                                     FoodCategoryChip(
                                         category = category.value,
                                         isSelected = selectedCategory == category.value
                                     ) {
                                         text = category.value
+                                        scrollPosition = index
                                         selectedCategory = category.value
                                         viewModel.search(category.value)
                                     }
