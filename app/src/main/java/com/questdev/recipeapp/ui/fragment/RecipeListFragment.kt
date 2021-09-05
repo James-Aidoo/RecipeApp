@@ -17,7 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -50,8 +50,8 @@ class RecipeListFragment : Fragment() {
             setContent {
 
                 val recipes = viewModel.recipes.value
-                var text by remember { mutableStateOf("") }
-                var selectedCategory by remember { mutableStateOf("") }
+                var text by rememberSaveable { mutableStateOf("") }
+                var selectedCategory by rememberSaveable { mutableStateOf("") }
 
                 Column {
 
