@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -52,6 +51,7 @@ class RecipeListFragment : Fragment() {
 
                 val recipes = viewModel.recipes.value
                 var text by remember { mutableStateOf("") }
+                var selectedCategory by remember { mutableStateOf("") }
 
                 Column {
 
@@ -102,10 +102,14 @@ class RecipeListFragment : Fragment() {
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
-                                items(foodCategories) {
-                                    FoodCategoryChip(category = it.value) {
-                                        text = it.value
-                                        viewModel.search(it.value)
+                                items(foodCategories) { category ->
+                                    FoodCategoryChip(
+                                        category = category.value,
+                                        isSelected = selectedCategory == category.value
+                                    ) {
+                                        text = category.value
+                                        selectedCategory = category.value
+                                        viewModel.search(category.value)
                                     }
                                 }
                             }

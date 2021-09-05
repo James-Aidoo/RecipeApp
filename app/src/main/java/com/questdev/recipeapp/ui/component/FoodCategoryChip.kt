@@ -1,23 +1,24 @@
 package com.questdev.recipeapp.ui.component
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FoodCategoryChip(category: String, onClick: () -> Unit) {
+fun FoodCategoryChip(category: String, isSelected: Boolean, onClick: () -> Unit) {
     Card(
         shape = MaterialTheme.shapes.medium,
-        backgroundColor = MaterialTheme.colors.primary,
+        backgroundColor = if (isSelected) Color.LightGray else MaterialTheme.colors.primary,
         elevation = 8.dp,
         modifier = Modifier
             .padding(8.dp)
-            .clickable(onClick = onClick)
+            .toggleable(value = isSelected, onValueChange = { onClick.invoke() })
     ) {
         Text(
             text = category,
