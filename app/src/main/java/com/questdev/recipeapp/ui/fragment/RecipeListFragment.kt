@@ -7,33 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.questdev.domain.util.foodCategories
-import com.questdev.recipeapp.R
-import com.questdev.recipeapp.ui.component.FoodCategoryChip
 import com.questdev.recipeapp.ui.component.RecipeCard
+import com.questdev.recipeapp.ui.component.SearchAppBar
 import com.questdev.recipeapp.viewmodel.RecipeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RecipeListFragment : Fragment() {
@@ -49,78 +33,16 @@ class RecipeListFragment : Fragment() {
             setContent {
 
                 val recipes = viewModel.recipes.value
-                var text by rememberSaveable { mutableStateOf("") }
-                var selectedCategory by rememberSaveable { mutableStateOf("") }
-                var scrollPosition by rememberSaveable { mutableStateOf(0) }
-
-                val scrollState = rememberLazyListState()
-                val scope = rememberCoroutineScope()
+                var query by rememberSaveable { mutableStateOf("") }
 
                 Column {
 
-                    val focusManager = LocalFocusManager.current
+                    SearchAppBar(
+                        query = query,
+                        onQueryChange = { query = it },
+                        onExecuteSearch = viewModel::search
+                    )
 
-                    Surface(
-                        elevation = 8.dp,
-                        modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colors.surface
-                    ) {
-                        Column {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                            ) {
-                                TextField(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.9f)
-                                        .padding(8.dp),
-                                    value = text,
-                                    onValueChange = { text = it },
-                                    label = {
-                                        Text(
-                                            text = stringResource(R.string.search),
-                                        )
-                                    },
-                                    leadingIcon = {
-                                        Icon(
-                                            Icons.Filled.Search,
-                                            stringResource(R.string.search_icon)
-                                        )
-                                    },
-                                    textStyle = TextStyle(
-                                        color = MaterialTheme.colors.onSurface,
-                                    ),
-                                    keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Search
-                                    ),
-                                    keyboardActions = KeyboardActions(
-                                        onSearch = {
-                                            viewModel.search(text)
-                                            focusManager.clearFocus(true)
-                                        }
-                                    )
-                                )
-                            }
-                            LazyRow(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                state = scrollState
-                            ) {
-                                scope.launch { scrollState.animateScrollToItem(scrollPosition) }
-                                itemsIndexed(foodCategories) { index, category ->
-                                    FoodCategoryChip(
-                                        category = category.value,
-                                        isSelected = selectedCategory == category.value
-                                    ) {
-                                        text = category.value
-                                        scrollPosition = index
-                                        selectedCategory = category.value
-                                        viewModel.search(category.value)
-                                    }
-                                }
-                            }
-                        }
-                    }
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
