@@ -31,7 +31,6 @@ class RecipeListViewModel @Inject constructor(
             isBusy.value = true
 
             resetRecipeList(query)
-            delay(2000)
 
             val results = repository.searchRecipe(1, query)
             recipes.value = results.orEmpty()
