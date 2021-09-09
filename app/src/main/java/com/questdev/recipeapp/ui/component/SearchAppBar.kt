@@ -18,17 +18,23 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.questdev.domain.enums.FoodCategory
 import com.questdev.domain.util.foodCategories
 import com.questdev.recipeapp.R
 import kotlinx.coroutines.launch
 
 @Composable
-fun SearchAppBar(query: String, onQueryChange: (String) -> Unit, onExecuteSearch: (String) -> Unit) {
+fun SearchAppBar(
+    query: String,
+    onQueryChanged: (String) -> Unit,
+    onExecuteSearch: (String) -> Unit,
+    selectedCategory: FoodCategory?,
+    onSelectedCategoryChanged: (FoodCategory?) -> Unit
+) {
     val focusManager = LocalFocusManager.current
     val scrollState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     var scrollPosition by rememberSaveable { mutableStateOf(0) }
-    var selectedCategory by rememberSaveable { mutableStateOf("") }
 
     Surface(
         elevation = 8.dp,
@@ -44,7 +50,7 @@ fun SearchAppBar(query: String, onQueryChange: (String) -> Unit, onExecuteSearch
                         .fillMaxWidth(0.9f)
                         .padding(8.dp),
                     value = query,
-                    onValueChange = onQueryChange,
+                    onValueChange = onQueryChanged,
                     label = {
                         Text(
                             text = stringResource(R.string.search),
@@ -80,11 +86,11 @@ fun SearchAppBar(query: String, onQueryChange: (String) -> Unit, onExecuteSearch
                 itemsIndexed(foodCategories) { index, category ->
                     FoodCategoryChip(
                         category = category.value,
-                        isSelected = selectedCategory == category.value
+                        isSelected = selectedCategory == category
                     ) {
-                        onQueryChange(category.value)
+                        onQueryChanged(category.value)
                         scrollPosition = index
-                        selectedCategory = category.value
+                        onSelectedCategoryChanged(category)
                         onExecuteSearch(category.value)
                     }
                 }
