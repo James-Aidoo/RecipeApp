@@ -9,7 +9,6 @@ import com.questdev.domain.repository.RecipeRepository
 import com.questdev.domain.util.foodCategories
 import com.questdev.domain.util.getFoodCategory
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
