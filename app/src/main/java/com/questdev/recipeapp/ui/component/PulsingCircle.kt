@@ -1,4 +1,4 @@
-package com.questdev.recipeapp.util
+package com.questdev.recipeapp.ui.component
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
