@@ -16,12 +16,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.questdev.recipeapp.ui.component.CircularIndeterminateProgressBar
 import com.questdev.recipeapp.ui.component.RecipeCard
 import com.questdev.recipeapp.ui.component.SearchAppBar
+import com.questdev.recipeapp.ui.component.ShimmerRecipeCardItem
 import com.questdev.recipeapp.viewmodel.RecipeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -55,21 +58,36 @@ class RecipeListFragment : Fragment() {
                     )
 
                     Box {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight()
-                        ) {
-                            itemsIndexed(items = recipes) { index, item ->
-                                RecipeCard(recipe = item) {
-                                    Log.d(
-                                        TAG,
-                                        "Item with title '${item.title}' at index $index clicked"
+                        if (isBusy) {
+                            LazyColumn {
+                                items(5) {
+                                    ShimmerRecipeCardItem(
+                                        colors = listOf(
+                                            Color.LightGray.copy(alpha = 0.9f),
+                                            Color.LightGray.copy(alpha = 0.2f),
+                                            Color.LightGray.copy(alpha = 0.9f)
+                                        ),
+                                        height = 250.dp
                                     )
                                 }
                             }
-                        }
+                        } else {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
+                            ) {
+                                itemsIndexed(items = recipes) { index, item ->
+                                    RecipeCard(recipe = item) {
+                                        Log.d(
+                                            TAG,
+                                            "Item with title '${item.title}' at index $index clicked"
+                                        )
+                                    }
+                                }
+                            }
 
+                        }
                         CircularIndeterminateProgressBar(isBusy = isBusy)
                     }
 
