@@ -48,7 +48,7 @@ fun SearchAppBar(
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
-                        .padding(8.dp),
+                        .padding(16.dp),
                     value = query,
                     onValueChange = onQueryChanged,
                     label = {

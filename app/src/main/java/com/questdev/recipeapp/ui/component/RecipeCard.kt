@@ -25,7 +25,7 @@ fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
     Card(
         shape = MaterialTheme.shapes.medium,
         modifier = Modifier
-            .padding(vertical = 6.dp)
+            .padding(10.dp)
             .clickable(onClick = onClick),
         elevation = 4.dp
     ) {
@@ -35,7 +35,7 @@ fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
                 contentDescription = stringResource(R.string.recipe_image),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(225.dp),
+                    .height(250.dp),
                 circularRevealedEnabled = true,
                 contentScale = ContentScale.Crop,
                 placeHolder = ImageBitmap.imageResource(id = R.drawable.empty_plate),
