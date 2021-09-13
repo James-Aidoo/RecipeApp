@@ -5,12 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -25,6 +27,7 @@ import com.questdev.recipeapp.ui.component.CircularIndeterminateProgressBar
 import com.questdev.recipeapp.ui.component.RecipeCard
 import com.questdev.recipeapp.ui.component.SearchAppBar
 import com.questdev.recipeapp.ui.component.ShimmerRecipeCardItem
+import com.questdev.recipeapp.ui.theme.RecipeAppTheme
 import com.questdev.recipeapp.viewmodel.RecipeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,57 +43,57 @@ class RecipeListFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
+                RecipeAppTheme {
+                    val recipes = viewModel.recipes.value
+                    var query by rememberSaveable { mutableStateOf("") }
+                    val selectedCategory by rememberSaveable { viewModel.selectedCategory }
 
-                val recipes = viewModel.recipes.value
-                var query by rememberSaveable { mutableStateOf("") }
-                val selectedCategory by rememberSaveable { viewModel.selectedCategory }
+                    val isBusy by rememberSaveable { viewModel.isBusy }
 
-                val isBusy by rememberSaveable { viewModel.isBusy }
+                    Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
+                        SearchAppBar(
+                            query = query,
+                            onQueryChanged = { query = it },
+                            onExecuteSearch = viewModel::search,
+                            selectedCategory = selectedCategory,
+                            onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged
+                        )
 
-                Column {
-
-                    SearchAppBar(
-                        query = query,
-                        onQueryChanged = { query = it },
-                        onExecuteSearch = viewModel::search,
-                        selectedCategory = selectedCategory,
-                        onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged
-                    )
-
-                    Box {
-                        if (isBusy) {
-                            LazyColumn {
-                                items(5) {
-                                    ShimmerRecipeCardItem(
-                                        colors = listOf(
-                                            Color.LightGray.copy(alpha = 0.9f),
-                                            Color.LightGray.copy(alpha = 0.2f),
-                                            Color.LightGray.copy(alpha = 0.9f)
-                                        ),
-                                        height = 250.dp
-                                    )
-                                }
-                            }
-                        } else {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight()
-                            ) {
-                                itemsIndexed(items = recipes) { index, item ->
-                                    RecipeCard(recipe = item) {
-                                        Log.d(
-                                            TAG,
-                                            "Item with title '${item.title}' at index $index clicked"
+                        Box {
+                            if (isBusy) {
+                                LazyColumn {
+                                    items(5) {
+                                        ShimmerRecipeCardItem(
+                                            colors = listOf(
+                                                Color.LightGray.copy(alpha = 0.9f),
+                                                Color.LightGray.copy(alpha = 0.2f),
+                                                Color.LightGray.copy(alpha = 0.9f)
+                                            ),
+                                            height = 250.dp
                                         )
                                     }
                                 }
+                            } else {
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .fillMaxHeight()
+                                ) {
+                                    itemsIndexed(items = recipes) { index, item ->
+                                        RecipeCard(recipe = item) {
+                                            Log.d(
+                                                TAG,
+                                                "Item with title '${item.title}' at index $index clicked"
+                                            )
+                                        }
+                                    }
+                                }
+
                             }
-
+                            CircularIndeterminateProgressBar(isBusy = isBusy)
                         }
-                        CircularIndeterminateProgressBar(isBusy = isBusy)
-                    }
 
+                    }
                 }
             }
         }

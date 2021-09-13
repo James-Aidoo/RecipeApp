@@ -59,12 +59,14 @@ fun SearchAppBar(
                     leadingIcon = {
                         Icon(
                             Icons.Filled.Search,
-                            stringResource(R.string.search_icon)
+                            stringResource(R.string.search_icon),
+                            tint = MaterialTheme.colors.onSurface
                         )
                     },
                     textStyle = TextStyle(
                         color = MaterialTheme.colors.onSurface,
                     ),
+                    singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Search

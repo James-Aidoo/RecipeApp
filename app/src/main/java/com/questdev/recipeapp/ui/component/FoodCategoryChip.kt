@@ -7,14 +7,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun FoodCategoryChip(category: String, isSelected: Boolean, onClick: () -> Unit) {
     Card(
         shape = MaterialTheme.shapes.medium,
-        backgroundColor = if (isSelected) Color.LightGray else MaterialTheme.colors.primary,
+        backgroundColor = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.primary,
         elevation = 8.dp,
         modifier = Modifier
             .padding(8.dp)
