@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.questdev.recipeapp.app.App
 import com.questdev.recipeapp.ui.component.CircularIndeterminateProgressBar
 import com.questdev.recipeapp.ui.component.RecipeCard
 import com.questdev.recipeapp.ui.component.SearchAppBar
@@ -30,9 +31,13 @@ import com.questdev.recipeapp.ui.component.ShimmerRecipeCardItem
 import com.questdev.recipeapp.ui.theme.RecipeAppTheme
 import com.questdev.recipeapp.viewmodel.RecipeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class RecipeListFragment : Fragment() {
+
+    @Inject
+    lateinit var app: App
 
     private val viewModel: RecipeListViewModel by viewModels()
 
@@ -43,7 +48,7 @@ class RecipeListFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                RecipeAppTheme {
+                RecipeAppTheme(darkTheme = app.isDark) {
                     val recipes = viewModel.recipes.value
                     var query by rememberSaveable { mutableStateOf("") }
                     val selectedCategory by rememberSaveable { viewModel.selectedCategory }
@@ -57,7 +62,9 @@ class RecipeListFragment : Fragment() {
                             onExecuteSearch = viewModel::search,
                             selectedCategory = selectedCategory,
                             onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged
-                        )
+                        ) {
+                            app.isDark = !app.isDark
+                        }
 
                         Box {
                             if (isBusy) {
