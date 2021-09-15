@@ -19,7 +19,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -64,6 +63,7 @@ fun SearchAppBar(
                     label = {
                         Text(
                             text = stringResource(R.string.search),
+                            style = MaterialTheme.typography.body2
                         )
                     },
                     leadingIcon = {
@@ -73,9 +73,7 @@ fun SearchAppBar(
                             tint = MaterialTheme.colors.onSurface
                         )
                     },
-                    textStyle = TextStyle(
-                        color = MaterialTheme.colors.onSurface,
-                    ),
+                    textStyle = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.onSurface),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
