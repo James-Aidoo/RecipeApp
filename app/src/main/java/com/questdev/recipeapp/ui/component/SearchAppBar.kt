@@ -1,5 +1,6 @@
 package com.questdev.recipeapp.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -54,6 +55,7 @@ fun SearchAppBar(
 
                 TextField(
                     modifier = Modifier
+                        .background(color = MaterialTheme.colors.background, shape = MaterialTheme.shapes.small)
                         .constrainAs(searchId) {
                             linkTo(start = parent.start, end = toggleThemeId.start, top = parent.top, bottom = parent.bottom)
                             width = Dimension.fillToConstraints
