@@ -1,5 +1,6 @@
 package com.questdev.recipeapp.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +20,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -55,6 +55,7 @@ fun SearchAppBar(
 
                 TextField(
                     modifier = Modifier
+                        .background(color = MaterialTheme.colors.background, shape = MaterialTheme.shapes.small)
                         .constrainAs(searchId) {
                             linkTo(start = parent.start, end = toggleThemeId.start, top = parent.top, bottom = parent.bottom)
                             width = Dimension.fillToConstraints
@@ -64,6 +65,7 @@ fun SearchAppBar(
                     label = {
                         Text(
                             text = stringResource(R.string.search),
+                            style = MaterialTheme.typography.body2
                         )
                     },
                     leadingIcon = {
@@ -73,9 +75,7 @@ fun SearchAppBar(
                             tint = MaterialTheme.colors.onSurface
                         )
                     },
-                    textStyle = TextStyle(
-                        color = MaterialTheme.colors.onSurface,
-                    ),
+                    textStyle = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.onSurface),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
