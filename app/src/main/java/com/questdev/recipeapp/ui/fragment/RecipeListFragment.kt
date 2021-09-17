@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -55,18 +55,19 @@ class RecipeListFragment : Fragment() {
 
                     val isBusy by rememberSaveable { viewModel.isBusy }
 
-                    Column(modifier = Modifier.background(MaterialTheme.colors.background)) {
-                        SearchAppBar(
-                            query = query,
-                            onQueryChanged = { query = it },
-                            onExecuteSearch = viewModel::search,
-                            selectedCategory = selectedCategory,
-                            onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged
-                        ) {
-                            app.isDark = !app.isDark
-                        }
-
-                        Box {
+                    Scaffold(
+                        topBar = {
+                            SearchAppBar(
+                                query = query,
+                                onQueryChanged = { query = it },
+                                onExecuteSearch = viewModel::search,
+                                selectedCategory = selectedCategory,
+                                onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged
+                            ) {
+                                app.isDark = !app.isDark
+                            }
+                        }) {
+                        Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
                             if (isBusy) {
                                 LazyColumn {
                                     items(5) {
@@ -99,7 +100,6 @@ class RecipeListFragment : Fragment() {
                             }
                             CircularIndeterminateProgressBar(isBusy = isBusy)
                         }
-
                     }
                 }
             }
