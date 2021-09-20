@@ -46,11 +46,11 @@ dependencies {
 
     def okhttp3_version = '5.0.0-alpha.2'
     implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
 
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
 
     // Hilt unit tests
     testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"

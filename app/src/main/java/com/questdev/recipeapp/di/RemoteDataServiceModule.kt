@@ -1,7 +1,7 @@
 package com.questdev.recipeapp.di
 
-import com.questdev.data.storage.remote.RemoteDataClient
-import com.questdev.data.storage.remote.RemoteDataService
+import com.questdev.data.remote.RemoteDataClient
+import com.questdev.data.remote.RemoteDataService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
