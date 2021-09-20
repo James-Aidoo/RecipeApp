@@ -1,4 +1,4 @@
-package com.questdev.data.storage.remote
+package com.questdev.data.remote
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

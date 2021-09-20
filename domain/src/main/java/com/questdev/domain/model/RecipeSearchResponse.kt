@@ -1,4 +1,4 @@
-package com.questdev.data.model
+package com.questdev.domain.model
 
 import com.google.gson.annotations.SerializedName
 

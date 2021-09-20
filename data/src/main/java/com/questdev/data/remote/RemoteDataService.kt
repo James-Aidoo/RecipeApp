@@ -1,7 +1,7 @@
-package com.questdev.data.storage.remote
+package com.questdev.data.remote
 
-import com.questdev.data.model.RecipeDto
-import com.questdev.data.model.RecipeSearchResponse
+import com.questdev.domain.model.RecipeDto
+import com.questdev.domain.model.RecipeSearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query

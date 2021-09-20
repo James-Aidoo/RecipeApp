@@ -1,7 +1,7 @@
 package com.questdev.data.util.converter
 
-import com.questdev.data.model.RecipeDto
 import com.questdev.domain.model.Recipe
+import com.questdev.domain.model.RecipeDto
 
 fun RecipeDto.toRecipe() = Recipe(
     id = this.primaryKey ?: 0,
