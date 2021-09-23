@@ -7,11 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.questdev.recipeapp.ui.state.UiState
 
 @Composable
-fun CircularIndeterminateProgressBar(isBusy: Boolean) {
+fun CircularIndeterminateProgressBar(uiState: UiState) {
 
-    if (isBusy) {
+    if (uiState == UiState.Loading) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
