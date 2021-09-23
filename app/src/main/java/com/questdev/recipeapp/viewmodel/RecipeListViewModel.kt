@@ -1,7 +1,6 @@
 package com.questdev.recipeapp.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,7 +24,7 @@ class RecipeListViewModel @Inject constructor(
 
     val uiState = mutableStateOf<UiState>(UiState.Loading)
     val recipes = mutableStateOf<List<Recipe>>(listOf())
-    var failure: MutableState<String?>? = null
+    var failure = mutableStateOf<String?>(null)
 
     val selectedCategory = mutableStateOf<FoodCategory?>(null)
 
@@ -74,10 +73,6 @@ class RecipeListViewModel @Inject constructor(
 
     fun onSelectedCategoryChanged(category: FoodCategory?) {
         selectedCategory.value = category
-    }
-
-    fun clearFailure() {
-        failure = null
     }
 
 }

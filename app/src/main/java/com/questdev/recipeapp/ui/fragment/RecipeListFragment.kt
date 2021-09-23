@@ -28,7 +28,6 @@ import com.questdev.recipeapp.ui.state.UiState
 import com.questdev.recipeapp.ui.theme.RecipeAppTheme
 import com.questdev.recipeapp.viewmodel.RecipeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -54,7 +53,6 @@ class RecipeListFragment : Fragment() {
                     val uiState by remember { viewModel.uiState }
 
                     val scaffoldState = rememberScaffoldState()
-                    val scope = rememberCoroutineScope()
 
                     Scaffold(
                         topBar = {
@@ -104,15 +102,10 @@ class RecipeListFragment : Fragment() {
                                 }
                                 UiState.Result.Empty -> EmptyListState()
                                 UiState.Result.Error -> {
-                                    if (viewModel.failure != null) {
-                                        scope.launch {
-                                            scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
-                                            scaffoldState.snackbarHostState.showSnackbar(
-                                                viewModel.failure?.value
-                                                    ?: "Error occurred"
-                                            )
-                                            viewModel.clearFailure()
-                                        }
+                                    LaunchedEffect(scaffoldState.snackbarHostState) {
+                                        scaffoldState.snackbarHostState.showSnackbar(
+                                            viewModel.failure.value ?: "Error occurred"
+                                        )
                                     }
                                     EmptyListState()
                                 }
