@@ -66,7 +66,7 @@ dependencies {
     def nav_version = '2.3.5'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-compose:2.4.0-alpha08"
+    implementation "androidx.navigation:navigation-compose:2.4.0-alpha09"
 
     // Dependency Injection with Dagger-Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
@@ -75,6 +75,10 @@ dependencies {
     // Landscapist-glide image library dependency
     def landscapist_version = '1.3.1'
     implementation "com.github.skydoves:landscapist-glide:$landscapist_version"
+
+    // Lottie Animations for compose
+    def lottieVersion = '4.1.1-SNAPSHOT'
+    implementation "com.airbnb.android:lottie-compose:$lottieVersion"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

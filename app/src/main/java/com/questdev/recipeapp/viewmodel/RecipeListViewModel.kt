@@ -12,17 +12,20 @@ import com.questdev.domain.model.RecipeQueryParam
 import com.questdev.domain.repository.RecipeRepository
 import com.questdev.domain.util.foodCategories
 import com.questdev.domain.util.getFoodCategory
+import com.questdev.recipeapp.ui.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RecipeListViewModel @Inject constructor(
-    private val repository: RecipeRepository
+    repository: RecipeRepository
 ) : ViewModel() {
 
-    val isBusy = mutableStateOf(false)
+    val uiState = mutableStateOf<UiState>(UiState.Loading)
     val recipes = mutableStateOf<List<Recipe>>(listOf())
+    var failure = mutableStateOf<String?>(null)
+
     val selectedCategory = mutableStateOf<FoodCategory?>(null)
 
     private val searchRecipe = SearchRecipe(repository)
@@ -32,24 +35,29 @@ class RecipeListViewModel @Inject constructor(
     }
 
     fun search(query: String) {
-        isBusy.value = true
+        uiState.value = UiState.Loading
 
         resetRecipeList(query)
 
         searchRecipe(RecipeQueryParam(1, query), viewModelScope) {
             it.fold(::handleFailure, ::handleRecipeList)
-            isBusy.value = false
         }
     }
 
     private fun handleRecipeList(result: List<Recipe>) {
         recipes.value = result
+        uiState.value = if (result.isNotEmpty()) UiState.Result.Success else UiState.Result.Empty
     }
 
     private fun handleFailure(failure: Failure) {
+        uiState.value = UiState.Result.Error
+        this.failure = mutableStateOf(failure.throwable?.message)
+
         when (failure) {
             is Failure.NetworkConnection -> {  }
-            is Failure.ServerError -> { Log.d("handleFailure", failure.throwable?.stackTrace.toString()) }
+            is Failure.ServerError -> {
+                Log.d("handleFailure", failure.throwable?.stackTrace.toString())
+            }
             is Failure.FeatureFailure -> {  }
         }
     }
