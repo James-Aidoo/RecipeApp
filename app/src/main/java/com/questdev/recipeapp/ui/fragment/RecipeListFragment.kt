@@ -14,8 +14,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
@@ -47,7 +48,7 @@ class RecipeListFragment : Fragment() {
             setContent {
                 RecipeAppTheme(darkTheme = app.isDark) {
                     val recipes = viewModel.recipes.value
-                    var query by rememberSaveable { mutableStateOf("") }
+                    val query by remember { viewModel.query }
 
                     val selectedCategory by remember { viewModel.selectedCategory }
                     val uiState by remember { viewModel.uiState }
@@ -58,7 +59,7 @@ class RecipeListFragment : Fragment() {
                         topBar = {
                             SearchAppBar(
                                 query = query,
-                                onQueryChanged = { query = it },
+                                onQueryChanged = viewModel::onQueryChanged,
                                 onExecuteSearch = viewModel::search,
                                 selectedCategory = selectedCategory,
                                 onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged

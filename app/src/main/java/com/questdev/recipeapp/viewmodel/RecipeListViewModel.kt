@@ -26,20 +26,21 @@ class RecipeListViewModel @Inject constructor(
     val recipes = mutableStateOf<List<Recipe>>(listOf())
     var failure = mutableStateOf<String?>(null)
 
+    val query = mutableStateOf("")
     val selectedCategory = mutableStateOf<FoodCategory?>(null)
 
     private val searchRecipe = SearchRecipe(repository)
 
     init {
-        search("chicken")
+        search()
     }
 
-    fun search(query: String) {
+    fun search() {
         uiState.value = UiState.Loading
 
-        resetRecipeList(query)
+        resetRecipeList(query.value)
 
-        searchRecipe(RecipeQueryParam(1, query), viewModelScope) {
+        searchRecipe(RecipeQueryParam(1, query.value), viewModelScope) {
             it.fold(::handleFailure, ::handleRecipeList)
         }
     }
@@ -73,6 +74,10 @@ class RecipeListViewModel @Inject constructor(
 
     fun onSelectedCategoryChanged(category: FoodCategory?) {
         selectedCategory.value = category
+    }
+
+    fun onQueryChanged(newQuery: String) {
+        query.value = newQuery
     }
 
 }
