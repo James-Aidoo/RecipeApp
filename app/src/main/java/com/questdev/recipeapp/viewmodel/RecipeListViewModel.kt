@@ -22,30 +22,46 @@ class RecipeListViewModel @Inject constructor(
     repository: RecipeRepository
 ) : ViewModel() {
 
-    val uiState = mutableStateOf<UiState>(UiState.Loading)
-    val recipes = mutableStateOf<List<Recipe>>(listOf())
+    val uiState = mutableStateOf<UiState>(UiState.Loading.Initial)
+    val recipes = mutableStateOf<MutableList<Recipe>>(mutableListOf())
     var failure = mutableStateOf<String?>(null)
 
+    val query = mutableStateOf("")
     val selectedCategory = mutableStateOf<FoodCategory?>(null)
+    private var page = 1
 
     private val searchRecipe = SearchRecipe(repository)
 
     init {
-        search("chicken")
+        newSearch()
     }
 
-    fun search(query: String) {
-        uiState.value = UiState.Loading
+    fun newSearch() {
+        uiState.value = UiState.Loading.Initial
 
-        resetRecipeList(query)
+        resetRecipeList(query.value)
+        search()
+    }
+    
+    fun loadMore() {
+        if (recipes.value.size >= page * DEFAULT_PAGE_SIZE) {
+            uiState.value = UiState.Loading.More
+            page++
+            search()
+        }
+    }
 
-        searchRecipe(RecipeQueryParam(1, query), viewModelScope) {
+    private fun search() {
+        searchRecipe(RecipeQueryParam(page, query.value), viewModelScope) {
             it.fold(::handleFailure, ::handleRecipeList)
         }
     }
 
     private fun handleRecipeList(result: List<Recipe>) {
-        recipes.value = result
+        recipes.let {
+            if (page >= 2) it.value.addAll(result) else it.value = result.toMutableList()
+        }
+
         uiState.value = if (result.isNotEmpty()) UiState.Result.Success else UiState.Result.Empty
     }
 
@@ -67,12 +83,21 @@ class RecipeListViewModel @Inject constructor(
             if (!foodCategories.contains(getFoodCategory(query))) {
                 selectedCategory.value = null
             }
-            recipes.value = listOf()
+            recipes.value.clear()
+            page = 1
         }
     }
 
     fun onSelectedCategoryChanged(category: FoodCategory?) {
         selectedCategory.value = category
+    }
+
+    fun onQueryChanged(newQuery: String) {
+        query.value = newQuery
+    }
+
+    companion object {
+        private const val DEFAULT_PAGE_SIZE = 30
     }
 
 }

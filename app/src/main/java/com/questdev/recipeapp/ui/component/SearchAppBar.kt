@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 fun SearchAppBar(
     query: String,
     onQueryChanged: (String) -> Unit,
-    onExecuteSearch: (String) -> Unit,
+    onExecuteSearch: () -> Unit,
     selectedCategory: FoodCategory?,
     onSelectedCategoryChanged: (FoodCategory?) -> Unit,
     onSwitchTheme: () -> Unit
@@ -83,7 +83,8 @@ fun SearchAppBar(
                     ),
                     keyboardActions = KeyboardActions(
                         onSearch = {
-                            onExecuteSearch(query)
+                            onQueryChanged(query)
+                            onExecuteSearch()
                             focusManager.clearFocus(true)
                         }
                     )
@@ -111,7 +112,7 @@ fun SearchAppBar(
                         onQueryChanged(category.value)
                         scrollPosition = index
                         onSelectedCategoryChanged(category)
-                        onExecuteSearch(category.value)
+                        onExecuteSearch()
                     }
                 }
             }

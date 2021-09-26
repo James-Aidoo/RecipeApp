@@ -12,7 +12,7 @@ import com.questdev.recipeapp.ui.state.UiState
 @Composable
 fun CircularIndeterminateProgressBar(uiState: UiState) {
 
-    if (uiState == UiState.Loading) {
+    if (uiState is UiState.Loading) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
