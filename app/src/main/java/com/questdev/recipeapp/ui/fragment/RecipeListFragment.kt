@@ -60,7 +60,7 @@ class RecipeListFragment : Fragment() {
                             SearchAppBar(
                                 query = query,
                                 onQueryChanged = viewModel::onQueryChanged,
-                                onExecuteSearch = viewModel::search,
+                                onExecuteSearch = viewModel::newSearch,
                                 selectedCategory = selectedCategory,
                                 onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged
                             ) {
@@ -71,7 +71,7 @@ class RecipeListFragment : Fragment() {
                     ) {
                         Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
                             when (uiState) {
-                                UiState.Loading -> {
+                                UiState.Loading.Initial -> {
                                     LazyColumn {
                                         items(5) {
                                             ShimmerRecipeCardItem(
@@ -85,6 +85,7 @@ class RecipeListFragment : Fragment() {
                                         }
                                     }
                                 }
+                                UiState.Loading.More,
                                 UiState.Result.Success -> {
                                     LazyColumn(
                                         modifier = Modifier
@@ -92,6 +93,9 @@ class RecipeListFragment : Fragment() {
                                             .fillMaxHeight()
                                     ) {
                                         itemsIndexed(items = recipes) { index, item ->
+
+                                            if (index == recipes.lastIndex) viewModel.loadMore()
+
                                             RecipeCard(recipe = item) {
                                                 Log.d(
                                                     TAG,
