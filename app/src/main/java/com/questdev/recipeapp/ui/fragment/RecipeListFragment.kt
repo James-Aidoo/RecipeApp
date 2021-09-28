@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.questdev.recipeapp.app.App
+import com.questdev.recipeapp.events.RecipeListEvent
 import com.questdev.recipeapp.ui.component.*
 import com.questdev.recipeapp.ui.state.UiState
 import com.questdev.recipeapp.ui.theme.RecipeAppTheme
@@ -60,7 +61,7 @@ class RecipeListFragment : Fragment() {
                             SearchAppBar(
                                 query = query,
                                 onQueryChanged = viewModel::onQueryChanged,
-                                onExecuteSearch = viewModel::newSearch,
+                                onExecuteSearch = { viewModel.onTriggerEvent(RecipeListEvent.NewSearchEvent) },
                                 selectedCategory = selectedCategory,
                                 onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged
                             ) {
@@ -94,7 +95,9 @@ class RecipeListFragment : Fragment() {
                                     ) {
                                         itemsIndexed(items = recipes) { index, item ->
 
-                                            if (index == recipes.lastIndex) viewModel.loadMore()
+                                            if (index == recipes.lastIndex) {
+                                                viewModel.onTriggerEvent(RecipeListEvent.NextPageEvent)
+                                            }
 
                                             RecipeCard(recipe = item) {
                                                 Log.d(
