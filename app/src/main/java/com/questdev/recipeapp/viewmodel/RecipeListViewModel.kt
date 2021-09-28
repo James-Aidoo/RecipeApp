@@ -12,6 +12,9 @@ import com.questdev.domain.model.RecipeQueryParam
 import com.questdev.domain.repository.RecipeRepository
 import com.questdev.domain.util.foodCategories
 import com.questdev.domain.util.getFoodCategory
+import com.questdev.recipeapp.events.RecipeListEvent
+import com.questdev.recipeapp.events.RecipeListEvent.NewSearchEvent
+import com.questdev.recipeapp.events.RecipeListEvent.NextPageEvent
 import com.questdev.recipeapp.ui.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -33,17 +36,24 @@ class RecipeListViewModel @Inject constructor(
     private val searchRecipe = SearchRecipe(repository)
 
     init {
-        newSearch()
+        onTriggerEvent(NewSearchEvent)
     }
 
-    fun newSearch() {
+    fun onTriggerEvent(event: RecipeListEvent) {
+        when (event) {
+            NewSearchEvent -> newSearch()
+            NextPageEvent -> loadMore()
+        }
+    }
+
+    private fun newSearch() {
         uiState.value = UiState.Loading.Initial
 
         resetRecipeList(query.value)
         search()
     }
     
-    fun loadMore() {
+    private fun loadMore() {
         if (recipes.value.size >= page * DEFAULT_PAGE_SIZE) {
             uiState.value = UiState.Loading.More
             page++
