@@ -1,11 +1,8 @@
 package com.questdev.recipeapp.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.questdev.domain.enums.FoodCategory
-import com.questdev.domain.exception.Failure
 import com.questdev.domain.interactor.usecase.SearchRecipe
 import com.questdev.domain.model.Recipe
 import com.questdev.domain.model.RecipeQueryParam
@@ -22,12 +19,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecipeListViewModel @Inject constructor(
-    repository: RecipeRepository
-) : ViewModel() {
+    repository: RecipeRepository,
+) : ParentViewModel() {
 
-    val uiState = mutableStateOf<UiState>(UiState.Loading.Initial)
     val recipes = mutableStateOf<MutableList<Recipe>>(mutableListOf())
-    var failure = mutableStateOf<String?>(null)
 
     val query = mutableStateOf("")
     val selectedCategory = mutableStateOf<FoodCategory?>(null)
@@ -37,6 +32,7 @@ class RecipeListViewModel @Inject constructor(
 
     init {
         onTriggerEvent(NewSearchEvent)
+//        fetchSavedAppTheme()
     }
 
     fun onTriggerEvent(event: RecipeListEvent) {
@@ -73,19 +69,6 @@ class RecipeListViewModel @Inject constructor(
         }
 
         uiState.value = if (result.isNotEmpty()) UiState.Result.Success else UiState.Result.Empty
-    }
-
-    private fun handleFailure(failure: Failure) {
-        uiState.value = UiState.Result.Error
-        this.failure = mutableStateOf(failure.throwable?.message)
-
-        when (failure) {
-            is Failure.NetworkConnection -> {  }
-            is Failure.ServerError -> {
-                Log.d("handleFailure", failure.throwable?.stackTrace.toString())
-            }
-            is Failure.FeatureFailure -> {  }
-        }
     }
 
     private fun resetRecipeList(query: String) {
