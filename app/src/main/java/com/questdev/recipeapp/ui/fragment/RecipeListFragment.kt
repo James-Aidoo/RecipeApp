@@ -23,6 +23,9 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.questdev.recipeapp.app.App
 import com.questdev.recipeapp.events.RecipeListEvent
 import com.questdev.recipeapp.ui.component.*
@@ -30,6 +33,7 @@ import com.questdev.recipeapp.ui.state.UiState
 import com.questdev.recipeapp.ui.theme.RecipeAppTheme
 import com.questdev.recipeapp.viewmodel.RecipeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -45,9 +49,16 @@ class RecipeListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.fetchSavedAppTheme()
+            }
+        }
+
         return ComposeView(requireContext()).apply {
             setContent {
-                RecipeAppTheme(darkTheme = app.isDark) {
+                RecipeAppTheme(darkTheme = viewModel.isDark) {
                     val recipes = viewModel.recipes.value
                     val query by remember { viewModel.query }
 
@@ -65,7 +76,7 @@ class RecipeListFragment : Fragment() {
                                 selectedCategory = selectedCategory,
                                 onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged
                             ) {
-                                app.isDark = !app.isDark
+                                viewModel.persistAppTheme(!viewModel.isDark)
                             }
                         },
                         scaffoldState = scaffoldState
@@ -115,7 +126,7 @@ class RecipeListFragment : Fragment() {
                                             viewModel.failure.value ?: "Error occurred"
                                         )
                                     }
-                                    EmptyListState()
+                                    if (recipes.isEmpty()) EmptyListState()
                                 }
                             }
                             CircularIndeterminateProgressBar(uiState = uiState)
