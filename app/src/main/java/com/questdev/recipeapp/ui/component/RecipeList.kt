@@ -32,7 +32,7 @@ fun RecipeList(
 
     Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
         when (uiState) {
-            UiState.Loading.Initial -> {
+            is UiState.Loading -> {
                 LazyColumn {
                     items(5) {
                         ShimmerRecipeCardItem(
@@ -46,37 +46,38 @@ fun RecipeList(
                     }
                 }
             }
-            UiState.Loading.More,
-            UiState.Result.Success -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                ) {
-                    itemsIndexed(items = recipes) { index, item ->
+            is UiState.Result -> {
+                if (recipes.isNotEmpty()) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                    ) {
+                        itemsIndexed(items = recipes) { index, item ->
 
-                        if (index == recipes.lastIndex) {
-                            onTriggerEvent(RecipeListEvent.NextPageEvent)
-                        }
+                            if (index == recipes.lastIndex) {
+                                onTriggerEvent(RecipeListEvent.NextPageEvent)
+                            }
 
-                        RecipeCard(recipe = item) {
-                            onRecipeClick(item.id)
-                            Log.d(
-                                tag,
-                                "Item with title '${item.title}' at index $index clicked"
-                            )
+                            RecipeCard(recipe = item) {
+                                onRecipeClick(item.id)
+                                Log.d(
+                                    tag,
+                                    "Item with title '${item.title}' at index $index clicked"
+                                )
+                            }
                         }
                     }
+                } else {
+                    EmptyListState()
                 }
-            }
-            UiState.Result.Empty -> EmptyListState()
-            UiState.Result.Error -> {
-                LaunchedEffect(scaffoldState.snackbarHostState) {
-                    scaffoldState.snackbarHostState.showSnackbar(
-                        failure.value ?: "Error occurred"
-                    )
+                if (uiState is UiState.Result.Error) {
+                    LaunchedEffect(scaffoldState.snackbarHostState) {
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            failure.value ?: "Error occurred"
+                        )
+                    }
                 }
-                if (recipes.isEmpty()) EmptyListState()
             }
         }
     }

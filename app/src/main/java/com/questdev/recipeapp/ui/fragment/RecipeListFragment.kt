@@ -49,7 +49,8 @@ class RecipeListFragment : Fragment() {
                     val query by remember { viewModel.query }
 
                     val selectedCategory by remember { viewModel.selectedCategory }
-                    val uiState by remember { viewModel.uiState }
+                    val uiState = viewModel.uiState
+                    val isBusy = viewModel.isBusy
 
                     val scaffoldState = rememberScaffoldState()
 
@@ -69,7 +70,7 @@ class RecipeListFragment : Fragment() {
                     ) {
 
                         RecipeList(
-                            uiState = uiState,
+                            uiState = uiState.value,
                             recipes = recipes,
                             scaffoldState = scaffoldState,
                             failure = viewModel.failure,
@@ -79,7 +80,7 @@ class RecipeListFragment : Fragment() {
                             findNavController().navigate(R.id.viewRecipe, bundle)
                         }
 
-                        CircularIndeterminateProgressBar(uiState = uiState)
+                        CircularIndeterminateProgressBar(visible = isBusy.value)
                     }
                 }
             }
