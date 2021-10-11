@@ -22,7 +22,7 @@ abstract class ParentViewModel : ViewModel() {
     @Inject
     lateinit var dataRepository: DataRepository
 
-    val uiState = mutableStateOf<UiState>(UiState.Loading.Initial)
+    val uiState = mutableStateOf<UiState>(UiState.Loading)
     var failure = mutableStateOf<String?>(null)
 
     var isDark by mutableStateOf(false)
@@ -46,6 +46,8 @@ abstract class ParentViewModel : ViewModel() {
     }
 
     fun handleFailure(failure: Failure) {
+        extraOnErrorAction()
+
         uiState.value = UiState.Result.Error
         this.failure = mutableStateOf(failure.throwable?.message)
 
@@ -59,5 +61,7 @@ abstract class ParentViewModel : ViewModel() {
             }
         }
     }
+
+    abstract fun extraOnErrorAction()
 
 }

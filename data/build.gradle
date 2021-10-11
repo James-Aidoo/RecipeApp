@@ -27,7 +27,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
 
@@ -53,7 +53,7 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
     // DataStore Preferences
-    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    api "androidx.datastore:datastore-preferences:1.0.0"
 
     // Hilt unit tests
     testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"

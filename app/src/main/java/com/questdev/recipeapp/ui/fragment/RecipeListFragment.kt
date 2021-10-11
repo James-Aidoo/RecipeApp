@@ -1,46 +1,32 @@
 package com.questdev.recipeapp.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.questdev.recipeapp.app.App
+import androidx.navigation.fragment.findNavController
+import com.questdev.recipeapp.R
 import com.questdev.recipeapp.events.RecipeListEvent
-import com.questdev.recipeapp.ui.component.*
-import com.questdev.recipeapp.ui.state.UiState
+import com.questdev.recipeapp.ui.component.CircularIndeterminateProgressBar
+import com.questdev.recipeapp.ui.component.RecipeList
+import com.questdev.recipeapp.ui.component.SearchAppBar
 import com.questdev.recipeapp.ui.theme.RecipeAppTheme
 import com.questdev.recipeapp.viewmodel.RecipeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class RecipeListFragment : Fragment() {
-
-    @Inject
-    lateinit var app: App
 
     private val viewModel: RecipeListViewModel by viewModels()
 
@@ -63,7 +49,8 @@ class RecipeListFragment : Fragment() {
                     val query by remember { viewModel.query }
 
                     val selectedCategory by remember { viewModel.selectedCategory }
-                    val uiState by remember { viewModel.uiState }
+                    val uiState = viewModel.uiState
+                    val isBusy = viewModel.isBusy
 
                     val scaffoldState = rememberScaffoldState()
 
@@ -81,64 +68,23 @@ class RecipeListFragment : Fragment() {
                         },
                         scaffoldState = scaffoldState
                     ) {
-                        Box(modifier = Modifier.background(MaterialTheme.colors.background)) {
-                            when (uiState) {
-                                UiState.Loading.Initial -> {
-                                    LazyColumn {
-                                        items(5) {
-                                            ShimmerRecipeCardItem(
-                                                colors = listOf(
-                                                    Color.LightGray.copy(alpha = 0.9f),
-                                                    Color.LightGray.copy(alpha = 0.2f),
-                                                    Color.LightGray.copy(alpha = 0.9f)
-                                                ),
-                                                height = 250.dp
-                                            )
-                                        }
-                                    }
-                                }
-                                UiState.Loading.More,
-                                UiState.Result.Success -> {
-                                    LazyColumn(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .fillMaxHeight()
-                                    ) {
-                                        itemsIndexed(items = recipes) { index, item ->
 
-                                            if (index == recipes.lastIndex) {
-                                                viewModel.onTriggerEvent(RecipeListEvent.NextPageEvent)
-                                            }
-
-                                            RecipeCard(recipe = item) {
-                                                Log.d(
-                                                    TAG,
-                                                    "Item with title '${item.title}' at index $index clicked"
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                                UiState.Result.Empty -> EmptyListState()
-                                UiState.Result.Error -> {
-                                    LaunchedEffect(scaffoldState.snackbarHostState) {
-                                        scaffoldState.snackbarHostState.showSnackbar(
-                                            viewModel.failure.value ?: "Error occurred"
-                                        )
-                                    }
-                                    if (recipes.isEmpty()) EmptyListState()
-                                }
-                            }
-                            CircularIndeterminateProgressBar(uiState = uiState)
+                        RecipeList(
+                            uiState = uiState.value,
+                            recipes = recipes,
+                            scaffoldState = scaffoldState,
+                            failure = viewModel.failure,
+                            onTriggerEvent = viewModel::onTriggerEvent
+                        ) {
+                            val bundle = RecipeFragment.getRequiredArguments(it)
+                            findNavController().navigate(R.id.viewRecipe, bundle)
                         }
+
+                        CircularIndeterminateProgressBar(visible = isBusy.value)
                     }
                 }
             }
         }
-    }
-
-    companion object {
-        private val TAG = RecipeListFragment::class.java.simpleName
     }
 
 }
