@@ -27,7 +27,7 @@ class DataRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getRecipe(id: Int): Either<Failure, Recipe> {
-        return request(remoteDataSource::getRecipe, id, { it?.toRecipe() ?: Recipe() })
+        return request(remoteDataSource::getRecipe, id, { it?.toRecipe() ?: Recipe.empty() })
     }
 
     override fun getThemeIsDark(): Flow<Boolean> {
@@ -42,7 +42,7 @@ class DataRepositoryImpl @Inject constructor(
         call: suspend (P) -> T,
         param: P,
         transform: (T) -> R
-    ): Either<Failure, R> where R : Any, T : Any?, P : Any {
+    ): Either<Failure, R> where T : Any? {
         return try {
             Either.Right(transform(call(param)))
         } catch (e: Throwable) {
@@ -54,7 +54,7 @@ class DataRepositoryImpl @Inject constructor(
     private suspend fun <P, T> request(
         call: suspend (P) -> T,
         param: P
-    ): Either<Failure, T> where T : Any, P : Any {
+    ): Either<Failure, T> where T : Any?, P : Any {
         return try {
             Either.Right(call(param))
         } catch (e: Throwable) {

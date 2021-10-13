@@ -13,6 +13,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.questdev.recipeapp.events.RecipeEvent
+import com.questdev.recipeapp.viewmodel.RecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,18 +23,26 @@ class RecipeFragment : Fragment() {
 
     private var recipeId: Int = 0
 
+    private val viewModel: RecipeViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        extractArguments()
+        viewModel.onTriggerEvent(RecipeEvent.GetRecipe(recipeId))
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        extractArguments()
-
         return ComposeView(requireContext()).apply {
             setContent {
+
+                val recipe = viewModel.recipe.value
+
                 Text(
-                    text = "Recipe Fragment",
+                    text = recipe?.title ?: "Recipe Fragment",
                     modifier = Modifier.padding(16.dp),
                     style = TextStyle(fontSize = 21.sp)
                 )
@@ -39,12 +50,11 @@ class RecipeFragment : Fragment() {
         }
     }
 
-    fun extractArguments() {
+    private fun extractArguments() {
         arguments?.let {
             recipeId = it.getInt(KEY_RECIPE_ID)
         } ?: return
         Log.d(TAG, "The ID of the clicked recipe: $recipeId")
-
     }
 
     companion object {
