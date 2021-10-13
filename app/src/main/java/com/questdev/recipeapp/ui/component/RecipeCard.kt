@@ -78,5 +78,5 @@ fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
 @Composable
 @Preview
 fun PreviewRecipeCard() {
-    RecipeCard(recipe = Recipe(title = "Title", rating = 39)) {}
+    RecipeCard(recipe = Recipe.empty().copy(title = "Title", rating = 39)) {}
 }

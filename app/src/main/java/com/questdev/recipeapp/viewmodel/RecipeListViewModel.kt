@@ -52,7 +52,7 @@ class RecipeListViewModel @Inject constructor(
         resetRecipeList()
         search()
     }
-    
+
     private fun loadMore() {
         if (recipes.value.size >= page * DEFAULT_PAGE_SIZE && !loadingMore) {
             pageBeingFetched = page + 1

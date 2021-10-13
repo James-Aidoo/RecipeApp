@@ -17,7 +17,7 @@ fun RecipeDto.toRecipe() = Recipe(
     dateUpdated = this.dateUpdated.orEmpty()
 )
 
-fun Recipe.toApiModel() = RecipeDto(
+fun Recipe.toRecipeDto() = RecipeDto(
     primaryKey = this.id,
     title = this.title,
     publisher = this.title,
@@ -31,6 +31,6 @@ fun Recipe.toApiModel() = RecipeDto(
     dateUpdated = this.dateUpdated
 )
 
-fun List<Recipe>.toRecipeDtoList() = this.map { it.toApiModel() }
+fun List<Recipe>.toRecipeDtoList() = this.map { it.toRecipeDto() }
 
 fun List<RecipeDto>.toRecipeList() = this.map { it.toRecipe() }
