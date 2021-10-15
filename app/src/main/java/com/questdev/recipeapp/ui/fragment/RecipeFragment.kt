@@ -5,18 +5,28 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.questdev.recipeapp.events.RecipeEvent
+import com.questdev.recipeapp.ui.component.CircularIndeterminateProgressBar
+import com.questdev.recipeapp.ui.component.RecipeDetail
+import com.questdev.recipeapp.ui.state.UiState
+import com.questdev.recipeapp.ui.theme.RecipeAppTheme
 import com.questdev.recipeapp.viewmodel.RecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RecipeFragment : Fragment() {
@@ -36,16 +46,40 @@ class RecipeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.fetchSavedAppTheme()
+            }
+        }
+
         return ComposeView(requireContext()).apply {
             setContent {
-
                 val recipe = viewModel.recipe.value
+                val uiState = viewModel.uiState.value
 
-                Text(
-                    text = recipe?.title ?: "Recipe Fragment",
-                    modifier = Modifier.padding(16.dp),
-                    style = TextStyle(fontSize = 21.sp)
-                )
+                RecipeAppTheme(darkTheme = viewModel.isDark) {
+
+                    val scaffoldState = rememberScaffoldState()
+
+                    Scaffold(scaffoldState = scaffoldState) {
+                        Box {
+                            when (uiState) {
+                                is UiState.Loading -> {
+                                    Text(
+                                        text = "Loading Recipe...",
+                                        style = MaterialTheme.typography.h5,
+                                        modifier = Modifier.padding(8.dp)
+                                    )
+                                }
+                                is UiState.Result -> {
+                                    recipe?.let { RecipeDetail(recipe = it) }
+                                }
+                            }
+                            CircularIndeterminateProgressBar(visible = uiState == UiState.Loading)
+                        }
+                    }
+                }
+
             }
         }
     }

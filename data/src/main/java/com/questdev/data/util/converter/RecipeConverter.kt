@@ -6,7 +6,7 @@ import com.questdev.domain.model.RecipeDto
 fun RecipeDto.toRecipe() = Recipe(
     id = this.primaryKey ?: 0,
     title = this.title.orEmpty(),
-    publisher = this.title.orEmpty(),
+    publisher = this.publisher.orEmpty(),
     featuredImage = this.featuredImage.orEmpty(),
     rating = this.rating ?: 0,
     sourceUrl = this.sourceUrl.orEmpty(),
