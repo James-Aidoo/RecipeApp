@@ -3,6 +3,7 @@ package com.questdev.recipeapp.ui.component
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -30,17 +31,20 @@ fun RecipeDetail(recipe: Recipe) {
 
     ) {
         item {
-            GlideImage(
-                imageModel = recipe.featuredImage,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(260.dp)
-                    .padding(bottom = 8.dp),
-                colorFilter = ColorFilter.lighting(colorFilterMul.value, Color.Unspecified),
-                placeHolder = painterResource(id = R.drawable.empty_plate),
-                error = painterResource(id = R.drawable.empty_plate)
-            )
+            Card(
+                shape = MaterialTheme.shapes.small, elevation = 0.dp, modifier = Modifier.padding(bottom = 8.dp)
+            ) {
+                GlideImage(
+                    imageModel = recipe.featuredImage,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(260.dp),
+                    colorFilter = ColorFilter.lighting(colorFilterMul.value, Color.Unspecified),
+                    placeHolder = painterResource(id = R.drawable.empty_plate),
+                    error = painterResource(id = R.drawable.empty_plate)
+                )
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
