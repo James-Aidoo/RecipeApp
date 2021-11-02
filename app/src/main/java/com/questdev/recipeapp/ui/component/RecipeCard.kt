@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.questdev.domain.model.Recipe
 import com.questdev.recipeapp.R
 import com.questdev.recipeapp.ui.theme.Black400
+import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
@@ -43,7 +44,7 @@ fun RecipeCard(recipe: Recipe, onClick: () -> Unit) {
                     .fillMaxWidth()
                     .height(250.dp),
                 colorFilter = ColorFilter.lighting(colorFilterMul.value, Color.Unspecified),
-                circularRevealedEnabled = true,
+                circularReveal = CircularReveal(),
                 contentScale = ContentScale.Crop,
                 placeHolder = ImageBitmap.imageResource(id = R.drawable.empty_plate),
                 error = ImageBitmap.imageResource(id = R.drawable.empty_plate),
