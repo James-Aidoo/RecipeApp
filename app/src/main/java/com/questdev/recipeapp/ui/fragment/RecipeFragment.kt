@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
@@ -60,24 +61,27 @@ class RecipeFragment : Fragment() {
                     val scaffoldState = rememberScaffoldState()
 
                     Scaffold(scaffoldState = scaffoldState) {
-                        Box {
-                            when (uiState) {
-                                is UiState.Loading -> {
-                                    ShimmerRecipeDetail(
-                                        colors = listOf(
-                                            Color.LightGray.copy(alpha = 0.9f),
-                                            Color.LightGray.copy(alpha = 0.2f),
-                                            Color.LightGray.copy(alpha = 0.9f)
-                                        ),
-                                        height = 260.dp
-                                    )
+                        Crossfade(targetState = uiState) { state ->
+                            Box {
+                                when (state) {
+                                    is UiState.Loading -> {
+                                        ShimmerRecipeDetail(
+                                            colors = listOf(
+                                                Color.LightGray.copy(alpha = 0.9f),
+                                                Color.LightGray.copy(alpha = 0.2f),
+                                                Color.LightGray.copy(alpha = 0.9f)
+                                            ),
+                                            height = 260.dp
+                                        )
+                                    }
+                                    is UiState.Result -> {
+                                        recipe?.let { RecipeDetail(recipe = it) }
+                                    }
                                 }
-                                is UiState.Result -> {
-                                    recipe?.let { RecipeDetail(recipe = it) }
-                                }
+                                CircularIndeterminateProgressBar(visible = uiState == UiState.Loading)
                             }
-                            CircularIndeterminateProgressBar(visible = uiState == UiState.Loading)
                         }
+
                     }
                 }
 
