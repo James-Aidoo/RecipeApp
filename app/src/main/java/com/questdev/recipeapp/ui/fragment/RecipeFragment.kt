@@ -6,12 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -22,6 +19,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.questdev.recipeapp.events.RecipeEvent
 import com.questdev.recipeapp.ui.component.CircularIndeterminateProgressBar
 import com.questdev.recipeapp.ui.component.RecipeDetail
+import com.questdev.recipeapp.ui.component.ShimmerRecipeDetail
 import com.questdev.recipeapp.ui.state.UiState
 import com.questdev.recipeapp.ui.theme.RecipeAppTheme
 import com.questdev.recipeapp.viewmodel.RecipeViewModel
@@ -65,10 +63,13 @@ class RecipeFragment : Fragment() {
                         Box {
                             when (uiState) {
                                 is UiState.Loading -> {
-                                    Text(
-                                        text = "Loading Recipe...",
-                                        style = MaterialTheme.typography.h5,
-                                        modifier = Modifier.padding(8.dp)
+                                    ShimmerRecipeDetail(
+                                        colors = listOf(
+                                            Color.LightGray.copy(alpha = 0.9f),
+                                            Color.LightGray.copy(alpha = 0.2f),
+                                            Color.LightGray.copy(alpha = 0.9f)
+                                        ),
+                                        height = 260.dp
                                     )
                                 }
                                 is UiState.Result -> {
